@@ -67,4 +67,6 @@ interface ISavingsCELO {
 
 	function savingsToCELO(uint256 savingsAmount) external view returns (uint256);
 	function celoToSavings(uint256 celoAmount) external view returns (uint256);
+
+	function balanceOf(address addr) external view returns (uint256);
 }
