@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "sortition-sum-tree-factory/contracts/SortitionSumTreeFactory.sol";
 
-import "./interfaces/IRandom.sol";
+import "./celo/identity/interfaces/IRandom.sol";
 import "./interfaces/IRegistry.sol";
 import "./interfaces/ISavingsCELO.sol";
 
@@ -22,12 +22,15 @@ contract LotteryManager {
 
 	address _lotteryTokenAddress;
 	address _savingsCeloAddress;
+	address _randomAddress;
 
 	constructor (
-		address savingsCeloAddress
+		address savingsCeloAddress,
+		address randomAddress
 	) public {
 		_lotteryTokenAddress = address(new LotteryToken());
 		_savingsCeloAddress = savingsCeloAddress;
+		_randomAddress = randomAddress;
 	}
 
 	function create (string memory name, uint256 activeDurationBlocks, uint256 claimDurationBlocks) public returns (address) {
@@ -37,7 +40,8 @@ contract LotteryManager {
 				activeDurationBlocks, 
 				claimDurationBlocks,
 				_lotteryTokenAddress, 
-				_savingsCeloAddress
+				_savingsCeloAddress,
+				_randomAddress
 			)
 		);
 

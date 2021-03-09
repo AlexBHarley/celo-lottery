@@ -33,6 +33,10 @@ contract LotteryToken is ERC20 {
 	}
 
 	function burn (address addr, uint256 amount) canMint(msg.sender) public {
+		require(
+			balanceOf(addr) > amount, 
+			"Trying to burn more than address has"
+		);
 		_burn(addr, amount);
 	}
 }

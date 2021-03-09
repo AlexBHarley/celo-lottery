@@ -7,7 +7,9 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "sortition-sum-tree-factory/contracts/SortitionSumTreeFactory.sol";
 
-import "./interfaces/IRandom.sol";
+import "./celo/identity/interfaces/IRandom.sol";
+import "./celo/common/interfaces/IGoldToken.sol";
+// import "./celo/common/interfaces/ILockedGold.sol";
 import "./interfaces/IRegistry.sol";
 import "./interfaces/ISavingsCELO.sol";
 
@@ -18,12 +20,11 @@ contract Lottery {
 	using SafeMath for uint256;
   using SortitionSumTreeFactory for SortitionSumTreeFactory.SortitionSumTrees;
 
-  SortitionSumTreeFactory.SortitionSumTrees internal sortitionSumTrees;
-
 	IRegistry constant _registry = IRegistry(address(0x000000000000000000000000000000000000ce10));
-	IERC20 public _goldToken;
+	IGoldToken public _goldToken;
 	IRandom public _random;
 	ISavingsCELO public _savingsCelo;
+	address _savingsCeloAddress;
 	LotteryToken public _tickets;
 
 	string _name;
@@ -32,14 +33,15 @@ contract Lottery {
 	uint256 _claimDurationBlocks;
 
 	mapping(address => uint256) deposits;
-
 	uint256 playerCount;
 	uint256 totalDeposited;
 
+	SortitionSumTreeFactory.SortitionSumTrees internal sortitionSumTrees;
+  bytes32 constant private TREE_KEY = keccak256("CeloLottery/Ticket");
+
 	event Deposited(address indexed from, uint256 amount);
 	event Withdrew(address indexed from, uint256 amount);
-
-  bytes32 constant private TREE_KEY = keccak256("CeloLottery/Ticket");
+	event Log(uint256 data);
 
 	constructor (
 		string memory name,
@@ -47,15 +49,17 @@ contract Lottery {
 		uint256 claimDurationBlocks,
 
 		address lotteryTokenAddress,
-		address savingsCeloAddress
+		address savingsCeloAddress,
+		address randomAddress
 	) public {
 		_tickets = LotteryToken(lotteryTokenAddress);
 		_savingsCelo = ISavingsCELO(savingsCeloAddress);
-		_goldToken = IERC20(_registry.getAddressForStringOrDie("GoldToken"));
-		_random = IRandom(_registry.getAddressForStringOrDie("Random"));
+		_savingsCeloAddress = savingsCeloAddress;
+		_goldToken = IGoldToken(_registry.getAddressForStringOrDie("GoldToken"));
+		_random = IRandom(randomAddress); // (_registry.getAddressForStringOrDie("Random"));
 
 		sortitionSumTrees.createTree(
-			keccak256(abi.encodePacked("CeloLottery", "/", name)), 
+			TREE_KEY,
 			5
 		);
 
@@ -66,36 +70,33 @@ contract Lottery {
 	}
 
 	function deposit(uint256 amount) external {
+		_tickets.mint(msg.sender, amount);
 		deposits[msg.sender] += amount;
 		totalDeposited += amount;
-		if (deposits[msg.sender] == 0) {
-			playerCount += 1;
-		}
-
+		
+		sortitionSumTrees.set(TREE_KEY, _tickets.balanceOf(msg.sender), bytes32(uint256(msg.sender)));
+		
 		require(
 			_goldToken.transferFrom(msg.sender, address(this), amount),
 			"CELO transfer failed"
 		);
-		_tickets.mint(msg.sender, amount);
-		
+		_goldToken.increaseAllowance(_savingsCeloAddress, amount);
+		_savingsCelo.deposit(amount);
+
 		emit Deposited(msg.sender, amount);
 	}
 
 	function withdraw (uint256 amount) external {
-		require(
-			deposits[msg.sender] >= amount, 
-			"Invalid balance"
-		);
-
-		deposits[msg.sender] -= amount;
-		totalDeposited -= amount;
-		if (deposits[msg.sender] - amount == 0) {
-			playerCount -= 1;
-		} 
+		require(deposits[msg.sender] > amount, "Not enough balance");
 
 		_tickets.burn(msg.sender, amount);
-		msg.sender.transfer(amount);
+		deposits[msg.sender] -= amount;
+		totalDeposited -= amount;
+
+		sortitionSumTrees.set(TREE_KEY, _tickets.balanceOf(msg.sender), bytes32(uint256(msg.sender)));
 		emit Withdrew(msg.sender, amount);
+
+		msg.sender.transfer(amount);
 	}
 
 	function getUniformRandomNumber(uint256 _entropy, uint256 _upperBound) internal pure returns (uint256) {
@@ -129,9 +130,16 @@ contract Lottery {
 			return;
 		}
 
-		uint256 rewardAmount = _savingsCelo.balanceOf(selected) - totalDeposited;
+		uint256 totalSavingsCelo = _savingsCelo.balanceOf(address(this));
+		uint256 totalCelo = _savingsCelo.savingsToCELO(totalSavingsCelo);
+		uint256 rewardAmount = totalCelo.sub(totalDeposited);
+
 		_tickets.mint(selected, rewardAmount);
 	}
+	
+  function chanceOf(address user) external view returns (uint256) {
+    return sortitionSumTrees.stakeOf(TREE_KEY, bytes32(uint256(user)));
+  }
 
 	function getTotalDeposited () external view returns (uint256) {
 		return totalDeposited;
