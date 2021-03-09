@@ -9,7 +9,6 @@ import "sortition-sum-tree-factory/contracts/SortitionSumTreeFactory.sol";
 
 import "./celo/identity/interfaces/IRandom.sol";
 import "./celo/common/interfaces/IGoldToken.sol";
-// import "./celo/common/interfaces/ILockedGold.sol";
 import "./interfaces/IRegistry.sol";
 import "./interfaces/ISavingsCELO.sol";
 
@@ -32,6 +31,7 @@ contract Lottery {
 	uint256 _activeDurationBlocks;
 	uint256 _claimDurationBlocks;
 
+	mapping(address => uint256) pendingWithdrawals;
 	mapping(address => uint256) deposits;
 	uint256 playerCount;
 	uint256 totalDeposited;
@@ -147,5 +147,38 @@ contract Lottery {
 
 	function getDepositsForAddress (address account) external view returns (uint256) {
 		return deposits[account];
+	}
+
+	function withdrawStart(
+		uint256 celoAmount,
+		address lesserAfterPendingRevoke,
+		address greaterAfterPendingRevoke,
+		address lesserAfterActiveRevoke,
+		address greaterAfterActiveRevoke
+	) external {
+		require(deposits[msg.sender] >= celoAmount);
+
+		deposits[msg.sender] -= celoAmount;
+		pendingWithdrawals[msg.sender] += celoAmount;
+		_tickets.burn(msg.sender, celoAmount);
+
+		uint256 savingsCeloAmount = _savingsCelo.celoToSavings(celoAmount);
+		_savingsCelo.withdrawStart(
+			savingsCeloAmount, 
+			lesserAfterPendingRevoke, 
+			greaterAfterPendingRevoke, 
+			lesserAfterActiveRevoke, 
+			greaterAfterActiveRevoke
+		);
+	}
+
+	function withdrawFinish(uint256 index, uint256 indexGlobal) external {
+		require(pendingWithdrawals[msg.sender] > 0);
+		
+		uint256 amount = pendingWithdrawals[msg.sender];
+
+		pendingWithdrawals[msg.sender] = 0;
+		_tickets.withdrawFinish(index, indexGlobal);
+		_goldToken.transfer(address(this), amount);
 	}
 }

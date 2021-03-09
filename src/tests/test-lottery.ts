@@ -56,7 +56,7 @@ contract("CeloLottery - Deposits", (accounts) => {
 	let savingsCelo: SavingsCELOInstance;
 	let lotteryKit: LotteryKit;
 
-	before(async () => {
+	beforeEach(async () => {
 		random = await Random.new();
 		await random.initialize(256);
 
@@ -66,101 +66,110 @@ contract("CeloLottery - Deposits", (accounts) => {
 			savingsCelo.address,
 			random.address
 		);
-		lotteryKit = new LotteryKit(kit, lotteryManager.address);
+		lotteryKit = new LotteryKit(
+			kit,
+			savingsCelo.address,
+			lotteryManager.address
+		);
+
+		it(`create accounts`, async () => {
+			[one, two, three] = await createAccounts(kit, owner, [
+				new BigNumber(toWei("1", "ether")).plus(depositAmount).toFixed(0),
+				new BigNumber(toWei("1", "ether")).plus(depositAmount).toFixed(0),
+				new BigNumber(toWei("1", "ether")).plus(depositAmount).toFixed(0),
+			]);
+		});
 	});
 
-	it(`create accounts`, async () => {
-		[one, two, three] = await createAccounts(kit, owner, [
-			new BigNumber(toWei("1", "ether")).plus(depositAmount).toFixed(0),
-			new BigNumber(toWei("1", "ether")).plus(depositAmount).toFixed(0),
-			new BigNumber(toWei("1", "ether")).plus(depositAmount).toFixed(0),
-		]);
-	});
+	describe("happy path", () => {
+		it("creates lotteries", async () => {
+			expect(await lotteryManager.getLotteries()).to.have.lengthOf(0);
 
-	it("creates lotteries", async () => {
-		expect(await lotteryManager.getLotteries()).to.have.lengthOf(0);
+			await lotteryManager.create("TestLottery", ONE_HOUR, ONE_HOUR, {
+				from: one,
+			});
 
-		await lotteryManager.create("TestLottery", ONE_HOUR, ONE_HOUR, {
-			from: one,
+			const lotteries = await lotteryManager.getLotteries();
+			expect(lotteries).to.have.lengthOf(1);
+
+			lottery = await Lottery.at(lotteries[0]);
 		});
 
-		const lotteries = await lotteryManager.getLotteries();
-		expect(lotteries).to.have.lengthOf(1);
+		it(`allows deposits into the lottery`, async () => {
+			const lotteryTokenAddress = await lotteryManager.getLotteryTokenAddress();
+			const lotteryTokenInstance = await LotteryToken.at(lotteryTokenAddress);
 
-		lottery = await Lottery.at(lotteries[0]);
-	});
+			const goldToken = await kit.contracts.getGoldToken();
+			await goldToken
+				.increaseAllowance(lottery.address, depositAmount)
+				.sendAndWaitForReceipt({ from: one } as any);
 
-	it(`allows deposits into the lottery`, async () => {
-		const lotteryTokenAddress = await lotteryManager.getLotteryTokenAddress();
-		const lotteryTokenInstance = await LotteryToken.at(lotteryTokenAddress);
+			const res = await lottery.deposit(depositAmount, { from: one });
+			const eventDeposited = res.logs.pop() as Truffle.TransactionLog<Deposited>;
+			assert.equal(eventDeposited.event, "Deposited");
+			assert.equal(eventDeposited.args.from, one);
+			assert.equal(eventDeposited.args.amount.toString(), depositAmount);
 
-		const goldToken = await kit.contracts.getGoldToken();
-		await goldToken
-			.increaseAllowance(lottery.address, depositAmount)
-			.sendAndWaitForReceipt({ from: one } as any);
+			const depositedOne = (await lottery.getDepositsForAddress(one)) as any;
 
-		const res = await lottery.deposit(depositAmount, { from: one });
-		const eventDeposited = res.logs.pop() as Truffle.TransactionLog<Deposited>;
-		assert.equal(eventDeposited.event, "Deposited");
-		assert.equal(eventDeposited.args.from, one);
-		assert.equal(eventDeposited.args.amount.toString(), depositAmount);
+			assert.isTrue(depositedOne.eq(eventDeposited.args.amount));
+			assert.isTrue(depositedOne.toString() === depositAmount);
 
-		const depositedOne = (await lottery.getDepositsForAddress(one)) as any;
+			const balanceOne = await goldToken.balanceOf(one);
+			assert.isTrue(balanceOne.lt(toWei("1", "ether")));
 
-		assert.isTrue(depositedOne.eq(eventDeposited.args.amount));
-		assert.isTrue(depositedOne.toString() === depositAmount);
+			const tickets = (await lotteryTokenInstance.balanceOf(one)) as any;
+			assert.isTrue(new BigNumber(depositAmount).eq(tickets));
+		});
 
-		const balanceOne = await goldToken.balanceOf(one);
-		assert.isTrue(balanceOne.lt(toWei("1", "ether")));
+		it("correctly calculates likelyhood of winning", async () => {
+			const chanceOfOne = await lottery.chanceOf(one);
+			expect(chanceOfOne.toString()).to.equal(depositAmount);
 
-		const tickets = (await lotteryTokenInstance.balanceOf(one)) as any;
-		assert.isTrue(new BigNumber(depositAmount).eq(tickets));
-	});
+			const goldToken = await kit.contracts.getGoldToken();
+			await goldToken
+				.increaseAllowance(lottery.address, depositAmount)
+				.sendAndWaitForReceipt({ from: two } as any);
+			await lottery.deposit(depositAmount, { from: two });
 
-	it("correctly calculates likelyhood of winning", async () => {
-		const chanceOfOne = await lottery.chanceOf(one);
-		expect(chanceOfOne.toString()).to.equal(depositAmount);
+			const chanceOfTwo = await lottery.chanceOf(two);
+			expect(chanceOfTwo.toString()).to.equal(depositAmount);
 
-		const goldToken = await kit.contracts.getGoldToken();
-		await goldToken
-			.increaseAllowance(lottery.address, depositAmount)
-			.sendAndWaitForReceipt({ from: two } as any);
-		await lottery.deposit(depositAmount, { from: two });
+			const calcuatedTotal = chanceOfOne.add(chanceOfTwo);
+			const total = await lottery.getTotalDeposited();
+			expect(calcuatedTotal.eq(total)).to.equal(true);
+		});
 
-		const chanceOfTwo = await lottery.chanceOf(two);
-		expect(chanceOfTwo.toString()).to.equal(depositAmount);
+		it("executing fails before round is over", async () => {
+			const [lotteryAddress] = await lotteryManager.getLotteries();
+			const lottery = await Lottery.at(lotteryAddress);
 
-		const calcuatedTotal = chanceOfOne.add(chanceOfTwo);
-		const total = await lottery.getTotalDeposited();
-		expect(calcuatedTotal.eq(total)).to.equal(true);
+			try {
+				await lottery.execute();
+				assert.fail("Executing should have failed");
+			} catch (e) {
+				assert.isTrue(e.reason === "Round is not finished yet");
+			}
+		});
 
-		console.log(chanceOfOne.toString(), chanceOfTwo.toString());
-	});
+		it("executing after time elapsed succeeds", async () => {
+			const lastBlock = await kit.web3.eth.getBlockNumber();
+			await random.addTestRandomness(lastBlock - 2, "0x01");
+			await random.addTestRandomness(lastBlock - 1, "0x02");
+			await random.addTestRandomness(lastBlock - 0, "0x03");
 
-	it("executing fails before round is over", async () => {
-		const [lotteryAddress] = await lotteryManager.getLotteries();
-		const lottery = await Lottery.at(lotteryAddress);
+			await increaseBlocks(kit.web3.currentProvider as Provider, ONE_HOUR + 1);
 
-		try {
-			await lottery.execute();
-			assert.fail("Executing should have failed");
-		} catch (e) {
-			assert.isTrue(e.reason === "Round is not finished yet");
-		}
-	});
+			try {
+				await lottery.execute();
+			} catch (e) {
+				assert.fail(e.message || e.reason);
+			}
+		});
 
-	it("executing after time elapsed succeeds", async () => {
-		const lastBlock = await kit.web3.eth.getBlockNumber();
-		await random.addTestRandomness(lastBlock - 2, "0x01");
-		await random.addTestRandomness(lastBlock - 1, "0x02");
-		await random.addTestRandomness(lastBlock - 0, "0x03");
-
-		await increaseBlocks(kit.web3.currentProvider as Provider, ONE_HOUR + 1);
-
-		try {
-			await lottery.execute();
-		} catch (e) {
-			assert.fail(e.message || e.reason);
-		}
+		it("allows withdrawing", async () => {
+			await lotteryKit.withdrawStart(depositAmount);
+			await lotteryKit.withdrawFinish(one);
+		});
 	});
 });
