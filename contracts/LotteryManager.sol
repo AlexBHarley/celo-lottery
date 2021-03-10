@@ -27,7 +27,7 @@ contract LotteryManager {
 	address _lotteryTokenAddress;
 	address _savingsCeloAddress;
 	address _randomAddress;
-	
+
 	constructor (
 		address savingsCeloAddress,
 		address randomAddress

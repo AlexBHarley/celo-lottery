@@ -19,72 +19,35 @@ export default function Landing() {
             <div className="lg:grid lg:grid-cols-2 lg:gap-8">
               <div className="mx-auto max-w-md px-4 sm:max-w-2xl sm:px-6 sm:text-center lg:px-0 lg:text-left lg:flex lg:items-center">
                 <div className="lg:py-24">
-                  <a
-                    href="#"
-                    className="inline-flex items-center text-white bg-black rounded-full p-1 pr-2 sm:text-base lg:text-sm xl:text-base hover:text-gray-200"
-                  >
-                    <span className="px-3 py-0.5 text-white text-xs font-semibold leading-5 uppercase tracking-wide bg-gradient-to-r from-teal-500 to-cyan-600 rounded-full">
-                      We're hiring
-                    </span>
-                    <span className="ml-4 text-sm">Visit our careers page</span>
-                    {/* Heroicon name: solid/chevron-right */}
-                    <svg
-                      className="ml-2 w-5 h-5 text-gray-500"
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 20 20"
-                      fill="currentColor"
-                      aria-hidden="true"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-                        clipRule="evenodd"
-                      />
-                    </svg>
-                  </a>
                   <h1 className="mt-4 text-4xl tracking-tight font-extrabold text-white sm:mt-5 sm:text-6xl lg:mt-6 xl:text-6xl">
-                    <span className="block">A better way to</span>
+                    <span className="block">A lottery where</span>
                     <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-200 to-cyan-400 block">
-                      ship web apps
+                      you never lose
                     </span>
                   </h1>
                   <p className="mt-3 text-base text-gray-300 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
-                    Anim aute id magna aliqua ad ad non deserunt sunt. Qui irure
-                    qui Lorem cupidatat commodo. Elit sunt amet fugiat veniam
-                    occaecat fugiat.
+                    Celo Lottery is a{" "}
+                    <Link href="/about">
+                      <a className="underline text-gray-200">
+                        lossless lottery
+                      </a>
+                    </Link>{" "}
+                    built on top of the Celo network. Winnings are generated
+                    from the interest accrued by deposits and you can withdraw
+                    your money at any time.
                   </p>
-                  <div className="mt-10 sm:mt-12">
-                    <form action="#" className="sm:max-w-xl sm:mx-auto lg:mx-0">
-                      <div className="sm:flex">
-                        <div className="min-w-0 flex-1">
-                          <label htmlFor="email" className="sr-only">
-                            Email address
-                          </label>
-                          <input
-                            id="email"
-                            type="email"
-                            placeholder="Enter your email"
-                            className="block w-full px-4 py-3 rounded-md border-0 text-base text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-400 focus:ring-offset-gray-900"
-                          />
-                        </div>
-                        <div className="mt-3 sm:mt-0 sm:ml-3">
-                          <button
-                            type="submit"
-                            className="block w-full py-3 px-4 rounded-md shadow bg-gradient-to-r from-teal-500 to-cyan-600 text-white font-medium hover:from-teal-600 hover:to-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-400 focus:ring-offset-gray-900"
-                          >
-                            Start free trial
-                          </button>
-                        </div>
-                      </div>
-                      <p className="mt-3 text-sm text-gray-300 sm:mt-4">
-                        Start your free 14-day trial, no credit card necessary.
-                        By providing your email, you agree to our{" "}
-                        <a href="#" className="font-medium text-white">
-                          terms or service
-                        </a>
-                        .
-                      </p>
-                    </form>
+
+                  <p className="mt-3 text-base text-gray-300 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
+                    This week there are over{" "}
+                    <span className="font-medium text-gray-200">$74,854</span>{" "}
+                    worth of prizes up for grabs.
+                  </p>
+                  <div className="mt-6 sm:ml-3">
+                    <Link href="/lotteries">
+                      <a className="block w-full py-3 px-4 rounded-md shadow bg-gradient-to-r from-teal-500 to-cyan-600 text-white font-medium hover:from-teal-600 hover:to-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-400 focus:ring-offset-gray-900 text-center">
+                        Get started
+                      </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -106,15 +69,15 @@ export default function Landing() {
           <div className="mx-auto max-w-md px-4 text-center sm:px-6 sm:max-w-3xl lg:px-8 lg:max-w-7xl">
             <div>
               <h2 className="text-base font-semibold tracking-wider text-cyan-600 uppercase">
-                Serverless
+                BLOCKCHAIN
               </h2>
               <p className="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">
-                No server? No problem.
+                Lotteries, reimagined.
               </p>
               <p className="mt-5 max-w-prose mx-auto text-xl text-gray-500">
-                Phasellus lorem quam molestie id quisque diam aenean nulla in.
-                Accumsan in quis quis nunc, ullamcorper malesuada. Eleifend
-                condimentum id viverra nulla.
+                Getting started with Celo Lottery costs less than $0.001, make
+                deposits into one of the many pools and be in for the chance to
+                win!
               </p>
             </div>
             <div className="mt-12 -mb-10 sm:-mb-24 lg:-mb-80">
@@ -130,15 +93,14 @@ export default function Landing() {
         <div className="relative bg-white py-16 sm:py-24 lg:py-32">
           <div className="mx-auto max-w-md px-4 text-center sm:max-w-3xl sm:px-6 lg:px-8 lg:max-w-7xl">
             <h2 className="text-base font-semibold tracking-wider text-cyan-600 uppercase">
-              Deploy faster
+              Overview
             </h2>
             <p className="mt-2 text-3xl font-extrabold text-gray-900 tracking-tight sm:text-4xl">
-              Everything you need to deploy your app
+              Celo Lottery at a glance
             </p>
             <p className="mt-5 max-w-prose mx-auto text-xl text-gray-500">
-              Phasellus lorem quam molestie id quisque diam aenean nulla in.
-              Accumsan in quis quis nunc, ullamcorper malesuada. Eleifend
-              condimentum id viverra nulla.
+              Celo Lottery is built to be trustless, your funds are help in
+              smart contracts that permit only you access to them.
             </p>
             <div className="mt-12">
               <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
@@ -166,11 +128,11 @@ export default function Landing() {
                         </span>
                       </div>
                       <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight">
-                        Push to Deploy
+                        Low fees
                       </h3>
                       <p className="mt-5 text-base text-gray-500">
-                        Ac tincidunt sapien vehicula erat auctor pellentesque
-                        rhoncus. Et magna sit morbi lobortis.
+                        Enter the draw and pay less than $0.001 in transaction
+                        fees.
                       </p>
                     </div>
                   </div>
@@ -199,11 +161,11 @@ export default function Landing() {
                         </span>
                       </div>
                       <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight">
-                        SSL Certificates
+                        Choose your wallet
                       </h3>
                       <p className="mt-5 text-base text-gray-500">
-                        Ac tincidunt sapien vehicula erat auctor pellentesque
-                        rhoncus. Et magna sit morbi lobortis.
+                        Connect with your Ledger, Valora, Metamask or one of the
+                        many other wallets we support.
                       </p>
                     </div>
                   </div>
@@ -232,11 +194,11 @@ export default function Landing() {
                         </span>
                       </div>
                       <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight">
-                        Simple Queues
+                        Charitable Donations
                       </h3>
                       <p className="mt-5 text-base text-gray-500">
-                        Ac tincidunt sapien vehicula erat auctor pellentesque
-                        rhoncus. Et magna sit morbi lobortis.
+                        A governable percentage of winnings will be donated to
+                        charities of choice. Play the lotto with a conscience.
                       </p>
                     </div>
                   </div>
@@ -266,78 +228,6 @@ export default function Landing() {
                       </div>
                       <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight">
                         Advanced Security
-                      </h3>
-                      <p className="mt-5 text-base text-gray-500">
-                        Ac tincidunt sapien vehicula erat auctor pellentesque
-                        rhoncus. Et magna sit morbi lobortis.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="pt-6">
-                  <div className="flow-root bg-gray-50 rounded-lg px-6 pb-8">
-                    <div className="-mt-6">
-                      <div>
-                        <span className="inline-flex items-center justify-center p-3 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-md shadow-lg">
-                          {/* Heroicon name: outline/cog */}
-                          <svg
-                            className="h-6 w-6 text-white"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            aria-hidden="true"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"
-                            />
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                            />
-                          </svg>
-                        </span>
-                      </div>
-                      <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight">
-                        Powerful API
-                      </h3>
-                      <p className="mt-5 text-base text-gray-500">
-                        Ac tincidunt sapien vehicula erat auctor pellentesque
-                        rhoncus. Et magna sit morbi lobortis.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <div className="pt-6">
-                  <div className="flow-root bg-gray-50 rounded-lg px-6 pb-8">
-                    <div className="-mt-6">
-                      <div>
-                        <span className="inline-flex items-center justify-center p-3 bg-gradient-to-r from-teal-500 to-cyan-600 rounded-md shadow-lg">
-                          {/* Heroicon name: outline/server */}
-                          <svg
-                            className="h-6 w-6 text-white"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                            stroke="currentColor"
-                            aria-hidden="true"
-                          >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              strokeWidth={2}
-                              d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"
-                            />
-                          </svg>
-                        </span>
-                      </div>
-                      <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight">
-                        Database Backups
                       </h3>
                       <p className="mt-5 text-base text-gray-500">
                         Ac tincidunt sapien vehicula erat auctor pellentesque
@@ -381,9 +271,9 @@ export default function Landing() {
                       <path d="M9.352 4C4.456 7.456 1 13.12 1 19.36c0 5.088 3.072 8.064 6.624 8.064 3.36 0 5.856-2.688 5.856-5.856 0-3.168-2.208-5.472-5.088-5.472-.576 0-1.344.096-1.536.192.48-3.264 3.552-7.104 6.624-9.024L9.352 4zm16.512 0c-4.8 3.456-8.256 9.12-8.256 15.36 0 5.088 3.072 8.064 6.624 8.064 3.264 0 5.856-2.688 5.856-5.856 0-3.168-2.304-5.472-5.184-5.472-.576 0-1.248.096-1.44.192.48-3.264 3.456-7.104 6.528-9.024L25.864 4z" />
                     </svg>
                     <p className="mt-6 text-2xl font-medium text-white">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                      Sed urna nulla vitae laoreet augue. Amet feugiat est
-                      integer dolor auctor adipiscing nunc urna, sit.
+                      Celo Lottery is the blockchain DApp I've been looking for.
+                      Low fees, big prizes and the fact a small percentage of
+                      winnings are donated to charity make it that much sweeter.
                     </p>
                   </div>
                   <footer className="mt-6">
@@ -410,9 +300,7 @@ export default function Landing() {
                 Helpful Resources
               </p>
               <p className="mt-5 mx-auto max-w-prose text-xl text-gray-500">
-                Phasellus lorem quam molestie id quisque diam aenean nulla in.
-                Accumsan in quis quis nunc, ullamcorper malesuada. Eleifend
-                condimentum id viverra nulla.
+                Learn about Celo Lottery and what it means to enter the draw.
               </p>
             </div>
             <div className="mt-12 mx-auto max-w-md px-4 grid gap-8 sm:max-w-lg sm:px-6 lg:px-8 lg:grid-cols-3 lg:max-w-7xl">
@@ -433,7 +321,7 @@ export default function Landing() {
                     </p>
                     <a href="#" className="block mt-2">
                       <p className="text-xl font-semibold text-gray-900">
-                        Boost your conversion rate
+                        How are charities picked?
                       </p>
                       <p className="mt-3 text-base text-gray-500">
                         Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -480,12 +368,12 @@ export default function Landing() {
                   <div className="flex-1">
                     <p className="text-sm font-medium text-cyan-600">
                       <a href="#" className="hover:underline">
-                        Video
+                        Article
                       </a>
                     </p>
                     <a href="#" className="block mt-2">
                       <p className="text-xl font-semibold text-gray-900">
-                        How to use search engine optimization to drive sales
+                        What yield sources are available?
                       </p>
                       <p className="mt-3 text-base text-gray-500">
                         Lorem ipsum dolor sit amet consectetur adipisicing elit.
@@ -594,16 +482,15 @@ export default function Landing() {
           <div className="relative mx-auto max-w-md px-4 py-12 sm:max-w-7xl sm:px-6 sm:py-20 md:py-28 lg:px-8 lg:py-32">
             <div className="md:ml-auto md:w-1/2 md:pl-10">
               <h2 className="text-base font-semibold uppercase tracking-wider text-gray-300">
-                Award winning support
+                Support
               </h2>
               <p className="mt-2 text-white text-3xl font-extrabold tracking-tight sm:text-4xl">
-                We’re here to help
+                Something gone wrong?
               </p>
               <p className="mt-3 text-lg text-gray-300">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Et,
-                egestas tempus tellus etiam sed. Quam a scelerisque amet
-                ullamcorper eu enim et fermentum, augue. Aliquet amet volutpat
-                quisque ut interdum tincidunt duis.
+                Our number one priority running a trustless lottery is ensuring
+                that everyone wins. If you've lost access to your funds or
+                something unexpected has happened, we're here to help.
               </p>
               <div className="mt-8">
                 <div className="inline-flex rounded-md shadow">

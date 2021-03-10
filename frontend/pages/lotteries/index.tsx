@@ -6,6 +6,7 @@ import Loader from "react-loader-spinner"
 import { Base } from "state"
 import add from "date-fns/add"
 import differenceInSeconds from "date-fns/differenceInSeconds"
+import Link from "next/link"
 
 enum LotteryType {
   SavingsCelo = "SavingsCelo",
@@ -46,6 +47,7 @@ const testLotteries = [
       wei: "1234567898765432112345678987654321",
     },
     type: LotteryType.Ubeswap,
+    address: "0x1234",
   },
   {
     name: "You know it's awesome",
@@ -61,6 +63,7 @@ const testLotteries = [
       wei: "1234567898765432112345678987654321",
     },
     type: LotteryType.SavingsCelo,
+    address: "0x1234",
   },
   {
     name: "The best lottery",
@@ -76,6 +79,7 @@ const testLotteries = [
       wei: "1234567898765432112345678987654321",
     },
     type: LotteryType.MoolaMarket,
+    address: "0x1234",
   },
 ]
 
@@ -103,7 +107,7 @@ function calculateTicker(endsAt: Date) {
   }
 }
 
-function Ticker({ endsAt }: { endsAt: Date }) {
+export function Ticker({ endsAt }: { endsAt: Date }) {
   const [ticker, setTicker] = useState(calculateTicker(endsAt))
 
   useEffect(() => {
@@ -247,9 +251,31 @@ export default function General() {
     setSaving(false)
   }
 
+  const totalDeposited = lotteries.reduce(
+    (total, l) => total + parseInt(l.deposited.usd),
+    0,
+  )
+  const totalPrizes = lotteries.reduce(
+    (total, l) => total + parseInt(l.prize.usd),
+    0,
+  )
+
   return (
     <>
-      <div className="px-3 py-2 space-y-4">
+      <div className="px-4 py-4">
+        <div
+          // className="shadow border border-gray-300"
+          className="w-full px-6 py-4 border border-transparent flex items-center space-x-4 rounded-md shadow-sm text-base text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700"
+        >
+          <CeloLogo style={{ minWidth: "2rem" }} className="h-8 w-8" />
+          <p>
+            There's currently $292 million deposited and ${totalPrizes}{" "}
+            available in prizes this week.
+          </p>
+        </div>
+      </div>
+
+      <div className="px-4 space-y-4">
         {lotteries.map((l) => {
           return (
             <div className="relative border border-gray-300 shadow rounded px-8 py-4 space-y-2">
@@ -269,9 +295,11 @@ export default function General() {
               </div>
 
               <div className="pt-2 pb-6">
-                <button className="w-full px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700">
-                  Enter draw now
-                </button>
+                <Link href={`/lotteries/${l.address}`}>
+                  <button className="w-full px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700">
+                    Enter draw now
+                  </button>
+                </Link>
               </div>
 
               <span className="absolute text-sm text-gray-600 right-2 bottom-2">
