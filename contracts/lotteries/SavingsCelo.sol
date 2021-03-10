@@ -7,15 +7,15 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "sortition-sum-tree-factory/contracts/SortitionSumTreeFactory.sol";
 
-import "./celo/identity/interfaces/IRandom.sol";
-import "./celo/common/interfaces/IGoldToken.sol";
-import "./interfaces/IRegistry.sol";
-import "./interfaces/ISavingsCELO.sol";
+import "../celo/identity/interfaces/IRandom.sol";
+import "../celo/common/interfaces/IGoldToken.sol";
+import "../interfaces/IRegistry.sol";
+import "../interfaces/ISavingsCELO.sol";
 
-import "./LotteryToken.sol";
+import "../LotteryToken.sol";
 
 
-contract Lottery {
+contract SavingsCeloLottery {
 	using SafeMath for uint256;
   using SortitionSumTreeFactory for SortitionSumTreeFactory.SortitionSumTrees;
 
@@ -178,7 +178,7 @@ contract Lottery {
 		uint256 amount = pendingWithdrawals[msg.sender];
 
 		pendingWithdrawals[msg.sender] = 0;
-		_tickets.withdrawFinish(index, indexGlobal);
+		_savingsCelo.withdrawFinish(index, indexGlobal);
 		_goldToken.transfer(address(this), amount);
 	}
 }

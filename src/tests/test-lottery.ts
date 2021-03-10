@@ -45,14 +45,12 @@ contract("CeloLottery - Deposits", (accounts) => {
 
 	let one: Address;
 	let two: Address;
-	let three: Address;
 	let random: RandomTestInstance;
 
 	const depositAmount = toWei("10", "ether");
 
 	let lotteryManager: LotteryManagerInstance;
 	let lottery: LotteryInstance;
-	let savingsKit: SavingsKit;
 	let savingsCelo: SavingsCELOInstance;
 	let lotteryKit: LotteryKit;
 
@@ -73,15 +71,14 @@ contract("CeloLottery - Deposits", (accounts) => {
 		);
 
 		it(`create accounts`, async () => {
-			[one, two, three] = await createAccounts(kit, owner, [
-				new BigNumber(toWei("1", "ether")).plus(depositAmount).toFixed(0),
+			[one, two] = await createAccounts(kit, owner, [
 				new BigNumber(toWei("1", "ether")).plus(depositAmount).toFixed(0),
 				new BigNumber(toWei("1", "ether")).plus(depositAmount).toFixed(0),
 			]);
 		});
 	});
 
-	describe("happy path", () => {
+	describe("savings celo lottery", () => {
 		it("creates lotteries", async () => {
 			expect(await lotteryManager.getLotteries()).to.have.lengthOf(0);
 

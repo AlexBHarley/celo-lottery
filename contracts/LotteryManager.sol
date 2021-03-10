@@ -12,18 +12,22 @@ import "./interfaces/IRegistry.sol";
 import "./interfaces/ISavingsCELO.sol";
 
 import "./LotteryToken.sol";
-import "./Lottery.sol";
+import "./lotteries/MoolaMarket.sol";
+import "./lotteries/SavingsCelo.sol";
+import "./lotteries/Ubeswap.sol";
 
 
 contract LotteryManager {
-	address[] public _lotteries;
+	address[] public _savingsCeloLotteries;
+	address[] public _moolaMarketLotteries;
+	address[] public _ubeswapLotteries;
 
-	event Created(address indexed from, address indexed lottery);
+	event Created(address indexed from, address indexed lottery, string t);
 
 	address _lotteryTokenAddress;
 	address _savingsCeloAddress;
 	address _randomAddress;
-
+	
 	constructor (
 		address savingsCeloAddress,
 		address randomAddress
@@ -33,9 +37,13 @@ contract LotteryManager {
 		_randomAddress = randomAddress;
 	}
 
-	function create (string memory name, uint256 activeDurationBlocks, uint256 claimDurationBlocks) public returns (address) {
+	function createSavingsCeloLottery (
+		string memory name, 
+		uint256 activeDurationBlocks, 
+		uint256 claimDurationBlocks
+	) public returns (address) {
 		address lotteryAddress = address(
-			new Lottery(
+			new SavingsCeloLottery(
 				name, 
 				activeDurationBlocks, 
 				claimDurationBlocks,
@@ -45,16 +53,15 @@ contract LotteryManager {
 			)
 		);
 
-		_lotteries.push(lotteryAddress);
-		emit Created(msg.sender, lotteryAddress);
-		
+		_savingsCeloLotteries.push(lotteryAddress);
+		emit Created(msg.sender, lotteryAddress, "SavingsCelo");
 		LotteryToken(_lotteryTokenAddress).approveMinting(lotteryAddress);
 
 		return lotteryAddress;
 	}
 
-	function getLotteries () external view returns (address[] memory) {
-		return _lotteries;
+	function getLotteries () external view returns (address[] memory, address[] memory, address[] memory) {
+		return (_savingsCeloLotteries, _moolaMarketLotteries, _ubeswapLotteries);
 	}
 
 	function getLotteryTokenAddress () external view returns (address) {
