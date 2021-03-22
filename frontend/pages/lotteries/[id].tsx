@@ -6,6 +6,7 @@ import Loader from "react-loader-spinner";
 import { Base } from "state";
 import add from "date-fns/add";
 import differenceInSeconds from "date-fns/differenceInSeconds";
+import format from "date-fns/format";
 import Link from "next/link";
 
 enum LotteryType {
@@ -97,7 +98,7 @@ function Ticker({ endsAt }: { endsAt: Date }) {
 						{ticker.days.toString().slice(1, 2)}
 					</span>
 				</div>
-				<span className="mx-auto text-xs font-thin">DAYS</span>
+				<span className="mx-auto text-xs font-light">DAYS</span>
 			</div>
 
 			<div></div>
@@ -112,7 +113,7 @@ function Ticker({ endsAt }: { endsAt: Date }) {
 						{ticker.hours.toString().slice(1, 2)}
 					</span>
 				</div>
-				<span className="mx-auto text-xs font-thin">HRS</span>
+				<span className="mx-auto text-xs font-light">HRS</span>
 			</div>
 
 			<div>:</div>
@@ -127,7 +128,7 @@ function Ticker({ endsAt }: { endsAt: Date }) {
 						{ticker.minutes.toString().slice(1, 2)}
 					</span>
 				</div>
-				<span className="mx-auto text-xs font-thin">MINS</span>
+				<span className="mx-auto text-xs font-light">MINS</span>
 			</div>
 
 			<div>:</div>
@@ -142,7 +143,7 @@ function Ticker({ endsAt }: { endsAt: Date }) {
 						{ticker.seconds.toString().slice(1, 2)}
 					</span>
 				</div>
-				<span className="mx-auto text-xs font-thin">SEC</span>
+				<span className="mx-auto text-xs font-light">SEC</span>
 			</div>
 		</div>
 	);
@@ -173,6 +174,47 @@ function CeloLogo(props: any) {
 				fill="#5ea33b"
 			/>
 		</svg>
+	);
+}
+
+function PastWinner({
+	address,
+	amount,
+	endsAt,
+}: {
+	amount: number;
+	address: string;
+	endsAt: Date;
+}) {
+	return (
+		<li>
+			<a href="#" className="block hover:bg-gray-50">
+				<div className="flex items-center px-4 py-4 sm:px-6">
+					<div className="min-w-0 flex-1 flex items-center">
+						<div className="flex-shrink-0">
+							<img
+								className="h-12 w-12 rounded-full"
+								src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixqx=qcGnavWRcu&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+							/>
+						</div>
+						<div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4">
+							<div>
+								<p className="text-sm font-medium text-indigo-600 truncate">
+									Unknown
+								</p>
+								<p className="mt-1 flex items-center text-sm text-gray-500">
+									<span className="truncate">{address}</span>
+								</p>
+							</div>
+						</div>
+					</div>
+					<div className="text-right">
+						<div className="text-gray-600">US${amount}</div>
+						<div className="text-gray-600">{format(endsAt, "dd MMMM")}</div>
+					</div>
+				</div>
+			</a>
+		</li>
 	);
 }
 
@@ -304,296 +346,28 @@ export default function General() {
 					</div>
 				</>
 
-				<div>Players</div>
+				<div>
+					<div className="text-lg font-medium mb-2">Current players</div>
+				</div>
 
-				<div>Past winners</div>
 				<>
+					<div className="text-lg font-medium mb-2">Past winners</div>
 					{/* This example requires Tailwind CSS v2.0+ */}
 					<div className="bg-white shadow overflow-hidden sm:rounded-md">
 						<ul className="divide-y divide-gray-200">
-							<li>
-								<a href="#" className="block hover:bg-gray-50">
-									<div className="flex items-center px-4 py-4 sm:px-6">
-										<div className="min-w-0 flex-1 flex items-center">
-											<div className="flex-shrink-0">
-												<img
-													className="h-12 w-12 rounded-full"
-													src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixqx=qcGnavWRcu&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-													alt
-												/>
-											</div>
-											<div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4">
-												<div>
-													<p className="text-sm font-medium text-indigo-600 truncate">
-														Ricardo Cooper
-													</p>
-													<p className="mt-2 flex items-center text-sm text-gray-500">
-														{/* Heroicon name: solid/mail */}
-														<svg
-															className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
-															xmlns="http://www.w3.org/2000/svg"
-															viewBox="0 0 20 20"
-															fill="currentColor"
-															aria-hidden="true"
-														>
-															<path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-															<path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-														</svg>
-														<span className="truncate">
-															ricardo.cooper@example.com
-														</span>
-													</p>
-												</div>
-												<div className="hidden md:block">
-													<div>
-														<p className="text-sm text-gray-900">
-															Applied on
-															<time dateTime="2020-01-07">January 7, 2020</time>
-														</p>
-														<p className="mt-2 flex items-center text-sm text-gray-500">
-															{/* Heroicon name: solid/check-circle */}
-															<svg
-																className="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400"
-																xmlns="http://www.w3.org/2000/svg"
-																viewBox="0 0 20 20"
-																fill="currentColor"
-																aria-hidden="true"
-															>
-																<path
-																	fillRule="evenodd"
-																	d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-																	clipRule="evenodd"
-																/>
-															</svg>
-															Completed phone screening
-														</p>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div>
-											{/* Heroicon name: solid/chevron-right */}
-											<svg
-												className="h-5 w-5 text-gray-400"
-												xmlns="http://www.w3.org/2000/svg"
-												viewBox="0 0 20 20"
-												fill="currentColor"
-												aria-hidden="true"
-											>
-												<path
-													fillRule="evenodd"
-													d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-													clipRule="evenodd"
-												/>
-											</svg>
-										</div>
-									</div>
-								</a>
-							</li>
-							<li>
-								<a href="#" className="block hover:bg-gray-50">
-									<div className="flex items-center px-4 py-4 sm:px-6">
-										<div className="min-w-0 flex-1 flex items-center">
-											<div className="flex-shrink-0">
-												<img
-													className="h-12 w-12 rounded-full"
-													src="https://images.unsplash.com/photo-1550525811-e5869dd03032?ixlib=rb-1.2.1&ixqx=qcGnavWRcu&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-													alt
-												/>
-											</div>
-											<div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4">
-												<div>
-													<p className="text-sm font-medium text-indigo-600 truncate">
-														Kristen Ramos
-													</p>
-													<p className="mt-2 flex items-center text-sm text-gray-500">
-														{/* Heroicon name: solid/mail */}
-														<svg
-															className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
-															xmlns="http://www.w3.org/2000/svg"
-															viewBox="0 0 20 20"
-															fill="currentColor"
-															aria-hidden="true"
-														>
-															<path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-															<path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-														</svg>
-														<span className="truncate">
-															kristen.ramos@example.com
-														</span>
-													</p>
-												</div>
-												<div className="hidden md:block">
-													<div>
-														<p className="text-sm text-gray-900">
-															Applied on
-															<time dateTime="2020-01-07">January 7, 2020</time>
-														</p>
-														<p className="mt-2 flex items-center text-sm text-gray-500">
-															{/* Heroicon name: solid/check-circle */}
-															<svg
-																className="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400"
-																xmlns="http://www.w3.org/2000/svg"
-																viewBox="0 0 20 20"
-																fill="currentColor"
-																aria-hidden="true"
-															>
-																<path
-																	fillRule="evenodd"
-																	d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-																	clipRule="evenodd"
-																/>
-															</svg>
-															Completed phone screening
-														</p>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div>
-											{/* Heroicon name: solid/chevron-right */}
-											<svg
-												className="h-5 w-5 text-gray-400"
-												xmlns="http://www.w3.org/2000/svg"
-												viewBox="0 0 20 20"
-												fill="currentColor"
-												aria-hidden="true"
-											>
-												<path
-													fillRule="evenodd"
-													d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-													clipRule="evenodd"
-												/>
-											</svg>
-										</div>
-									</div>
-								</a>
-							</li>
-							<li>
-								<a href="#" className="block hover:bg-gray-50">
-									<div className="flex items-center px-4 py-4 sm:px-6">
-										<div className="min-w-0 flex-1 flex items-center">
-											<div className="flex-shrink-0">
-												<img
-													className="h-12 w-12 rounded-full"
-													src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?ixlib=rb-1.2.1&ixqx=qcGnavWRcu&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-													alt
-												/>
-											</div>
-											<div className="min-w-0 flex-1 px-4 md:grid md:grid-cols-2 md:gap-4">
-												<div>
-													<p className="text-sm font-medium text-indigo-600 truncate">
-														Ted Fox
-													</p>
-													<p className="mt-2 flex items-center text-sm text-gray-500">
-														{/* Heroicon name: solid/mail */}
-														<svg
-															className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
-															xmlns="http://www.w3.org/2000/svg"
-															viewBox="0 0 20 20"
-															fill="currentColor"
-															aria-hidden="true"
-														>
-															<path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
-															<path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
-														</svg>
-														<span className="truncate">
-															ted.fox@example.com
-														</span>
-													</p>
-												</div>
-												<div className="hidden md:block">
-													<div>
-														<p className="text-sm text-gray-900">
-															Applied on
-															<time dateTime="2020-01-07">January 7, 2020</time>
-														</p>
-														<p className="mt-2 flex items-center text-sm text-gray-500">
-															{/* Heroicon name: solid/check-circle */}
-															<svg
-																className="flex-shrink-0 mr-1.5 h-5 w-5 text-green-400"
-																xmlns="http://www.w3.org/2000/svg"
-																viewBox="0 0 20 20"
-																fill="currentColor"
-																aria-hidden="true"
-															>
-																<path
-																	fillRule="evenodd"
-																	d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
-																	clipRule="evenodd"
-																/>
-															</svg>
-															Completed phone screening
-														</p>
-													</div>
-												</div>
-											</div>
-										</div>
-										<div>
-											{/* Heroicon name: solid/chevron-right */}
-											<svg
-												className="h-5 w-5 text-gray-400"
-												xmlns="http://www.w3.org/2000/svg"
-												viewBox="0 0 20 20"
-												fill="currentColor"
-												aria-hidden="true"
-											>
-												<path
-													fillRule="evenodd"
-													d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
-													clipRule="evenodd"
-												/>
-											</svg>
-										</div>
-									</div>
-								</a>
-							</li>
+							{Array(5)
+								.fill(null)
+								.map((f) => (
+									<PastWinner
+										address="0x1234"
+										amount={500}
+										endsAt={new Date()}
+									/>
+								))}
 						</ul>
 					</div>
 				</>
 			</div>
-
-			{/* <div className="px-4 space-y-4">
-				{lotteries.map((l) => {
-					return (
-						<div className="relative border border-gray-300 shadow rounded px-8 py-4 space-y-2">
-							<div className="text-sm font-medium text-gray-600"> {l.name}</div>
-							<div className="pt-2">
-								<div className="flex items-center space-x-3">
-									<CeloLogo className="h-10" />
-									<span className="text-5xl font-semibold">${l.prize.usd}</span>
-								</div>
-								<span className="text-sm font-light text-gray-500">
-									Next prize value {l.prize.celo} CELO
-								</span>
-							</div>
-
-							<div className="pt-4">
-								<Ticker endsAt={l.endsAt} />
-							</div>
-
-							<div className="pt-2 pb-6">
-								<Link href={`/lotteries/${l.address}`}>
-									<button className="w-full px-4 py-2 border border-transparent rounded-md shadow-sm text-base font-medium text-white bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700">
-										Enter draw now
-									</button>
-								</Link>
-							</div>
-
-							<span className="absolute text-sm text-gray-600 right-2 bottom-2">
-								Powered by{" "}
-								<a
-									target="_blank"
-									href={LOTTERY_TYPES[l.type].url}
-									style={{ color: LOTTERY_TYPES[l.type].color }}
-								>
-									{LOTTERY_TYPES[l.type].name}
-								</a>
-							</span>
-						</div>
-					);
-				})}
-			</div> */}
 		</>
 	);
 }
